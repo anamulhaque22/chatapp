@@ -1,5 +1,6 @@
-import { ZodError, ZodTypeAny } from "zod";
-import { HttpError } from "../erros/http-error";
+import { Request } from 'express';
+import { ZodError, ZodTypeAny } from 'zod';
+import { HttpError } from '../erros/http-error';
 
 type Schema = ZodTypeAny;
 type ParamsRecord = Record<string, string>;
@@ -13,7 +14,7 @@ export interface RequestValidationSchemas {
 
 const formatedError = (error: ZodError) =>
   error.errors.map((issue) => ({
-    path: issue.path.join("."),
+    path: issue.path.join('.'),
     message: issue.message,
   }));
 
@@ -26,24 +27,20 @@ export const validateRequest = (schemas: RequestValidationSchemas) => {
       }
 
       if (schemas.params) {
-        const parsedParams = schemas.params.parse(
-          req.params as ParamsRecord,
-        ) as unknown;
-        req.params = parsedParams;
+        const parsedParams = schemas.params.parse(req.params as ParamsRecord);
+        req.params = parsedParams as Request['params'];
       }
 
       if (schemas.query) {
-        const parsedQuery = schemas.query.parse(
-          req.query as QueryRecord,
-        ) as unknown;
-        req.query = parsedQuery;
+        const parsedQuery = schemas.query.parse(req.query as QueryRecord) as QueryRecord;
+        req.query = parsedQuery as Request['query'];
       }
 
       next();
     } catch (error) {
       if (error instanceof ZodError) {
         next(
-          new HttpError(400, "Validation Error", {
+          new HttpError(400, 'Validation Error', {
             issues: formatedError(error),
           }),
         );
