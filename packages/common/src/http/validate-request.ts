@@ -1,5 +1,5 @@
-import { Request } from 'express';
-import { ZodError, ZodTypeAny } from 'zod';
+import { NextFunction, Request } from 'express';
+import { ZodError, ZodIssue, ZodTypeAny } from 'zod';
 import { HttpError } from '../erros/http-error';
 
 type Schema = ZodTypeAny;
@@ -13,13 +13,13 @@ export interface RequestValidationSchemas {
 }
 
 const formatedError = (error: ZodError) =>
-  error.errors.map((issue) => ({
+  error.issues.map((issue: ZodIssue) => ({
     path: issue.path.join('.'),
     message: issue.message,
   }));
 
 export const validateRequest = (schemas: RequestValidationSchemas) => {
-  return (req: Request, _res: Response, next: nextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (schemas.body) {
         const parsedBody = schemas.body.parse(req.body) as unknown;
