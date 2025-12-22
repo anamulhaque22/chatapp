@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 const envSchema = z.object({
   NOVE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  ATUH_SERVICE_PORT: z.coerce.number().int().min(0).max(65_535).default(4003),
+  AUTH_SERVICE_PORT: z.coerce.number().int().min(0).max(65_535).default(4003),
   AUTH_DB_URL: z.url(),
 
   JWT_ACCESS_TOKEN_SECRET: z.string().min(1),
