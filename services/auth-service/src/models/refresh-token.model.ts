@@ -1,3 +1,5 @@
+import { sequelize } from '@/db/sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { UserCredentials } from './user-credentials.model';
 
 export interface RefreshTokenAttributes {

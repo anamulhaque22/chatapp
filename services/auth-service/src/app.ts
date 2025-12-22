@@ -1,23 +1,27 @@
-import cors from "cors";
-import express, { Application } from "express";
-import helmet from "helmet";
-import { errorHandler } from "./middleware/error-handler";
+import cors from 'cors';
+import express, { Application } from 'express';
+import helmet from 'helmet';
+import { errorHandler } from './middleware/error-handler';
+import { registerRoutes } from './routes';
 
 export const createApp = (): Application => {
   const app = express();
   app.use(helmet());
   app.use(
     cors({
-      origin: "*",
+      origin: '*',
       credentials: true,
-    })
+    }),
   );
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
   app.use((_req, res) => {
-    res.status(200).json({ message: "Not Found" });
+    res.status(200).json({ message: 'Not Found' });
   });
+
+  registerRoutes(app);
+
   app.use(errorHandler);
   return app;
 };
