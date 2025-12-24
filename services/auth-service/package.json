@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
-  "main": "dest/index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "pnpm -r --workspace-root=false run build",
+    "build": "tsc --project tsconfig.json",
     "dev": "tsx watch src/index.ts",
-    "lint": "pnpm -r --workspace-root=false run lint",
-    "format": "pnpm -r --workspace-root=false run format",
+    "start": "node dist/index.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "format": "prettier --check \"src/**/*.ts\" \"./*.json\"",
     "test": "pnpm -r --workspace-root=false run test"
   },
   "keywords": [],

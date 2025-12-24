@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
+import { errorHandler } from './middleware/error-handler';
 
 export const createApp = (): Application => {
   const app = express();
@@ -17,6 +18,8 @@ export const createApp = (): Application => {
   app.use((_req, res) => {
     res.status(200).json({ message: 'Not Found' });
   });
+
+  app.use(errorHandler);
 
   return app;
 };

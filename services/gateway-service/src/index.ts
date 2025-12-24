@@ -1,12 +1,13 @@
 import { createServer } from 'http';
 import { createApp } from './app';
+import { env } from './config/env';
 import { logger } from './utils/logger';
 
 const main = async () => {
   try {
     const app = createApp();
     const server = createServer(app);
-    const port = 4000;
+    const port = env.GATEWAY_PORT;
 
     server.listen(port, () => {
       logger.info({ port }, 'Gateway service is running');
