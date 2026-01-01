@@ -31,6 +31,7 @@ const main = async () => {
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);
   } catch (error) {
+    console.log(error);
     logger.error({ error }, 'Failed to start auth service');
     process.exit(1);
   }

@@ -1,6 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
-type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<unknown>;
+export type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<unknown>;
 
 const toError = (err: unknown): Error => (err instanceof Error ? err : new Error(String(err)));
 

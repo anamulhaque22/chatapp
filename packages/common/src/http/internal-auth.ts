@@ -6,7 +6,7 @@ export interface InternalAuthOptions {
   exemptPaths?: string[];
 }
 
-const DEFAULT_HEADER_NAME = 'x-internal-auth-token';
+const DEFAULT_HEADER_NAME = 'x-internal-token';
 
 export const createInternalAuthMiddleware = (
   expectedToken: string,
@@ -20,8 +20,8 @@ export const createInternalAuthMiddleware = (
       return next();
     }
 
-    const provided = req.header(headerName);
-    const token = Array.isArray(provided) ? provided[0] : provided;
+    const providedHeaderName = req.header(headerName);
+    const token = Array.isArray(providedHeaderName) ? providedHeaderName[0] : providedHeaderName;
 
     if (typeof token !== 'string' || token !== expectedToken) {
       next(new HttpError(401, 'Unauthorized'));
