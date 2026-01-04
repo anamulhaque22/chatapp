@@ -75,7 +75,6 @@ export const authProxyService = {
   async register(payload: RegisterPayload): Promise<AuthResponse> {
     try {
       const register = await client.post<AuthResponse>('/auth/register', payload, authHeader);
-      console.log('Register response:', register.data);
       return register.data;
     } catch (error) {
       return handleAxiosError(error);

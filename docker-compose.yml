@@ -1,4 +1,16 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: chatapp_rabbitmq
+    ports:
+      - '${RABBITMQ_PORT:-5672}:5672'
+      - '${RABBITMQ_MANAGEMENT_PORT:-15672}:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guestt}
+    networks:
+      - chatapp_network
+
   auth-db:
     image: mysql:8.0
     container_name: chatapp_auth_db
@@ -7,9 +19,9 @@ services:
       MYSQL_USER: ${AUTH_DB_USER:-chatapp_auth_user}
       MYSQL_ROOT_PASSWORD: ${AUTH_DB_ROOT_PASSWORD:-root_password}
       MYSQL_PASSWORD: ${AUTH_DB_PASSWORD:-chatapp_auth_password}
-    command: ["mysqld", "--default-authentication-plugin=mysql_native_password"]
+    command: ['mysqld', '--default-authentication-plugin=mysql_native_password']
     ports:
-      - "${AUTH_DB_PORT:-3306}:3306"
+      - '${AUTH_DB_PORT:-3306}:3306'
     volumes:
       - auth_db_data:/var/lib/mysql
     networks:
