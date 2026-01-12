@@ -12,6 +12,8 @@ const envSchema = z.object({
   JWT_REFRESH_TOKEN_EXPIRATION: z.string().default('7d'),
 
   INTERNAL_API_TOKEN: z.string().min(32),
+
+  RABBITMQ_URL: z.string().url(),
 });
 
 type EnvType = z.infer<typeof envSchema>;
