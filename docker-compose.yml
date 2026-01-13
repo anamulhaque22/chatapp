@@ -27,8 +27,23 @@ services:
     networks:
       - chatapp_network
 
+  user-db:
+    image: postgres:13
+    container_name: chatapp_user_db
+    environment:
+      POSTGRES_DB: ${USER_DB_NAME:-chatapp_user_service}
+      POSTGRES_USER: ${USER_DB_USER:-chatapp_user}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD:-chatapp_password}
+    ports:
+      - '${USER_DB_PORT:-5432}:5432'
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    networks:
+      - chatapp_network
+
 volumes:
   auth_db_data:
+  user_db_data:
 
 networks:
   chatapp_network:
