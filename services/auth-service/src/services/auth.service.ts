@@ -4,6 +4,7 @@ import { AuthResponse, RegisterInput } from '@/types/auth';
 import { hashPassword, signAccessToken, signRefreshToken } from '@/utils/token';
 import { HttpError } from '@chatapp/common';
 import { Transaction } from 'sequelize';
+import { publishedUserRegistered } from './../messaging/event-publisher';
 
 const REFRESH_TOKEN_TTL_DAYS = 7;
 
@@ -48,6 +49,8 @@ export const register = async (input: RegisterInput): Promise<AuthResponse> => {
       displayName: user.displayName,
       createdAt: user.createdAt.toISOString(),
     };
+
+    publishedUserRegistered(userData);
 
     return {
       accessToken,

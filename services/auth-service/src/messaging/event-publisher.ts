@@ -15,7 +15,7 @@ export const initPublisher = async () => {
     return;
   }
   if (channel) return;
-
+  console.log('Connecting to RabbitMQ at', env.RABBITMQ_URL);
   const connection = await connect(env.RABBITMQ_URL);
   connectionRef = connection;
   channel = await connection.createChannel();
