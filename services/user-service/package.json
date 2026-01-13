@@ -21,7 +21,9 @@
     "@chatapp/common": "workspace:^",
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

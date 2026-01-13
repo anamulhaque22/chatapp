@@ -1,10 +1,13 @@
 import { createServer } from 'http';
 import { createApp } from './app';
 import { env } from './config/env';
+import { initilizeDatabase } from './db/sequelize';
 import { logger } from './utils/logger';
 
 const main = async () => {
   try {
+    await initilizeDatabase();
+
     const app = createApp();
     const server = createServer(app);
     const port = env.USER_SERVICE_PORT;
