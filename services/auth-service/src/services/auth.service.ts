@@ -50,6 +50,8 @@ export const register = async (input: RegisterInput): Promise<AuthResponse> => {
       createdAt: user.createdAt.toISOString(),
     };
 
+    console.log('publishing user registered event', userData);
+
     publishedUserRegistered(userData);
 
     return {

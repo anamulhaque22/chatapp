@@ -2,11 +2,13 @@ import { createServer } from 'http';
 import { createApp } from './app';
 import { env } from './config/env';
 import { initilizeDatabase } from './db/sequelize';
+import { startAuthEventConsumer } from './messaging/auth.consumer';
 import { logger } from './utils/logger';
 
 const main = async () => {
   try {
     await initilizeDatabase();
+    await startAuthEventConsumer();
 
     const app = createApp();
     const server = createServer(app);

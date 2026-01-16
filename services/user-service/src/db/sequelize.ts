@@ -18,6 +18,8 @@ export const connectToDatabase = async () => {
 
 export const initilizeDatabase = async () => {
   await connectToDatabase();
+  const syncOptions = env.NOVE_ENV === 'development' ? { alter: true } : {};
+  await sequelize.sync(syncOptions);
 };
 
 export const closeDatabaseConnection = async () => {
