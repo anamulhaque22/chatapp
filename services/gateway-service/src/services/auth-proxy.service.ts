@@ -80,4 +80,30 @@ export const authProxyService = {
       return handleAxiosError(error);
     }
   },
+
+  async login(payload: LoginPayload): Promise<AuthTokens> {
+    try {
+      const login = await client.post<AuthTokens>('/auth/login', payload, authHeader);
+      return login.data;
+    } catch (error) {
+      return handleAxiosError(error);
+    }
+  },
+
+  async refreshToken(payload: RefreshPayload): Promise<AuthTokens> {
+    try {
+      const refresh = await client.post<AuthTokens>('/auth/refresh-token', payload, authHeader);
+      return refresh.data;
+    } catch (error) {
+      return handleAxiosError(error);
+    }
+  },
+
+  async revokeRefreshToken(payload: RevokePayload): Promise<void> {
+    try {
+      await client.post<void>('/auth/revoke-refresh-token', payload, authHeader);
+    } catch (error) {
+      return handleAxiosError(error);
+    }
+  },
 };

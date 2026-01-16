@@ -1,8 +1,27 @@
-POST http://localhost:4000/auth/register HTTP/1.1
+@baseURL=http://localhost:4000
+
+POST {{baseURL}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
     "displayName": "Md Anamul Haque",
     "email": "anam2@example.com",
     "password": "asdfjkl@1234"
+}
+
+### Login User
+POST {{baseURL}}/auth/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "anam2@example.com",
+    "password": "asdfjkl@1234"
+}
+
+### Refresh Token
+POST {{baseURL}}/auth/refresh-token HTTP/1.1
+content-type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTg5MWY5Mi01ZTQyLTRkYjMtOTFlZC1kYzE5Y2EyMDlhODEiLCJ0b2tlbklkIjoiODI1YzllMjUtNTk1Yi00ZTA2LWI5NmYtNzliMDNmOWQ1ZjhiIiwiaWF0IjoxNzY4NTM1ODM0LCJleHAiOjE3NjkxNDA2MzR9.vz44wjNajtryM8EkBMA3aR9xT01zQz8WSXnakH3SqW8"
 }

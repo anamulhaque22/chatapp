@@ -1,4 +1,5 @@
 import { env } from '@/config/env';
+import { HttpError } from '@chatapp/common';
 import bcrypt from 'bcrypt';
 import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 
@@ -39,5 +40,15 @@ export const signRefreshToken = (payload: RefreshTokenPayload): string => {
 };
 
 export const verityRefreshToken = (token: string): RefreshTokenPayload => {
-  return jwt.verify(token, REFRESH_TOKEN) as RefreshTokenPayload;
+  try {
+    return jwt.verify(token, REFRESH_TOKEN) as RefreshTokenPayload;
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      throw new HttpError(401, 'Refresh token expired');
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new HttpError(401, 'Invalid refresh token');
+    }
+    throw error;
+  }
 };
