@@ -4,6 +4,7 @@ import express, { Application } from 'express';
 import helmet from 'helmet';
 import { env } from './config/env';
 import { errorHandler } from './middleware/error-handler';
+import { registerRoutes } from './routes';
 
 export const createApp = (): Application => {
   const app = express();
@@ -22,6 +23,7 @@ export const createApp = (): Application => {
     }),
   );
 
+  registerRoutes(app);
   app.use((_req, res) => {
     res.status(200).json({ message: 'Not Found' });
   });
