@@ -1,11 +1,7 @@
 import { env } from '@/config/env';
 import { userService } from '@/services/user.service';
 import { logger } from '@/utils/logger';
-import {
-  AUTH_EVENT_EXCHANGE,
-  AUTH_USER_REGISTERED_ROUTING_KEY,
-  type AuthRegisteredEvent,
-} from '@chatapp/common';
+import { AUTH_EVENT_EXCHANGE, AUTH_USER_REGISTERED_ROUTING_KEY, type AuthRegisteredEvent } from '@chatapp/common';
 import { Channel, ChannelModel, connect, Connection, ConsumeMessage, Replies } from 'amqplib';
 
 type ManageConnection = Connection & ChannelModel;
@@ -27,6 +23,7 @@ const handleMessage = async (msg: ConsumeMessage, ch: Channel) => {
   const row = msg.content.toString('utf-8');
   const event = JSON.parse(row) as AuthRegisteredEvent;
   await userService.syncFromAuthUser(event.payload);
+  logger.info({ event }, 'User service synced user from auth service');
   ch.ack(msg);
 };
 
@@ -46,13 +43,16 @@ export const startAuthEventConsumer = async () => {
   const queue = await channel.assertQueue(QUEUE_NAME, { durable: true });
   await channel.bindQueue(queue.queue, AUTH_EVENT_EXCHANGE, AUTH_USER_REGISTERED_ROUTING_KEY);
 
+  const ch = channel;
   const consumeHandler = async (msg: ConsumeMessage | null) => {
     if (!msg) return;
 
-    void handleMessage(msg, channel).catch((error: unknown) => {
+    try {
+      await handleMessage(msg, ch);
+    } catch (error) {
       logger.error({ err: error }, 'Error processing auth event message');
-      channel?.nack(msg, false, false);
-    });
+      ch.nack(msg, false, false);
+    }
   };
 
   const result: Replies.Consume = await channel.consume(queue.queue, consumeHandler);

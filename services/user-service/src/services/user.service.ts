@@ -1,6 +1,7 @@
 import { publishUserCreatedEvent } from '@/messaging/event-publisher';
 import { userRepository, UserRepository } from '@/repositories/user.repository';
 import type { CreateUserInput, User } from '@/types/user';
+import { logger } from '@/utils/logger';
 import { AuthUserRegisteredPayload, HttpError } from '@chatapp/common';
 import { UniqueConstraintError } from 'sequelize';
 
@@ -19,8 +20,7 @@ class UserService {
       });
       return newUser;
     } catch (error) {
-      if (error instanceof UniqueConstraintError)
-        throw new HttpError(409, 'User with this email already exists');
+      if (error instanceof UniqueConstraintError) throw new HttpError(409, 'User with this email already exists');
 
       throw error;
     }
@@ -36,17 +36,14 @@ class UserService {
     return this.repository.findAll();
   }
 
-  async searchUsers(params: {
-    query: string;
-    options?: { limit?: number; excludeIds?: string[] };
-  }): Promise<User[]> {
+  async searchUsers(params: { query: string; options?: { limit?: number; excludeIds?: string[] } }): Promise<User[]> {
     return this.repository.searchQuery(params.query, params.options);
   }
 
   async syncFromAuthUser(payload: AuthUserRegisteredPayload): Promise<User> {
-    console.log('user service', payload);
     const user = await this.repository.upsertFromAuthEvent(payload);
 
+    logger.info({ userId: user.id }, 'User synced from auth event');
     void publishUserCreatedEvent({
       id: user.id,
       email: user.email,

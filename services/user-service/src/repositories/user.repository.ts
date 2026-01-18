@@ -34,15 +34,9 @@ export class UserRepository {
     return UserMapper.toDomain(userModel);
   }
 
-  async searchQuery(
-    query: string,
-    options: { limit?: number; excludeIds?: string[] } = {},
-  ): Promise<User[]> {
+  async searchQuery(query: string, options: { limit?: number; excludeIds?: string[] } = {}): Promise<User[]> {
     const whereClause: WhereOptions = {
-      [Op.or]: [
-        { displayName: { [Op.iLike]: `%${query}%` } },
-        { email: { [Op.iLike]: `%${query}%` } },
-      ],
+      [Op.or]: [{ displayName: { [Op.iLike]: `%${query}%` } }, { email: { [Op.iLike]: `%${query}%` } }],
     };
     if (options.excludeIds && options.excludeIds.length > 0) {
       Object.assign(whereClause, {
@@ -66,7 +60,7 @@ export class UserRepository {
         email: payload.email,
         displayName: payload.displayName,
       },
-      { returning: true },
+      { returning: true }
     );
     return UserMapper.toDomain(userModel);
   }
