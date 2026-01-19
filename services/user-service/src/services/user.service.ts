@@ -44,7 +44,7 @@ class UserService {
     const user = await this.repository.upsertFromAuthEvent(payload);
 
     logger.info({ userId: user.id }, 'User synced from auth event');
-    void publishUserCreatedEvent({
+    await publishUserCreatedEvent({
       id: user.id,
       email: user.email,
       displayName: user.displayName,

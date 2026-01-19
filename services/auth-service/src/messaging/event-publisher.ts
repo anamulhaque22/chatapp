@@ -1,10 +1,6 @@
 import { env } from '@/config/env';
 import { logger } from '@/utils/logger';
-import {
-  AUTH_EVENT_EXCHANGE,
-  AUTH_USER_REGISTERED_ROUTING_KEY,
-  AuthUserRegisteredPayload,
-} from '@chatapp/common';
+import { AUTH_EVENT_EXCHANGE, AUTH_USER_REGISTERED_ROUTING_KEY, AuthUserRegisteredPayload } from '@chatapp/common';
 import { Channel, connect, type ChannelModel } from 'amqplib';
 let connectionRef: ChannelModel | null = null;
 let channel: Channel | null = null;
@@ -46,14 +42,12 @@ export const publishedUserRegistered = (payload: AuthUserRegisteredPayload) => {
     type: AUTH_USER_REGISTERED_ROUTING_KEY,
     payload,
     occuredAt: new Date().toISOString(),
-    metadata: { version: 1 },
+    metadata: { version: 1, service: env.SERVICE_NAME },
   };
-  const published = channel.publish(
-    AUTH_EVENT_EXCHANGE,
-    AUTH_USER_REGISTERED_ROUTING_KEY,
-    Buffer.from(JSON.stringify(event)),
-    { persistent: true, contentType: 'application/json' },
-  );
+  const published = channel.publish(AUTH_EVENT_EXCHANGE, AUTH_USER_REGISTERED_ROUTING_KEY, Buffer.from(JSON.stringify(event)), {
+    persistent: true,
+    contentType: 'application/json',
+  });
   if (!published) {
     logger.warn({ event }, 'Failed to publish user registered event');
   }

@@ -1,11 +1,6 @@
 import { env } from '@/config/env';
 import { logger } from '@/utils/logger';
-import {
-  USER_CREATED_ROUTING_KEY,
-  USER_EVENTS_EXCHANGE,
-  UserCreatedEvent,
-  UserCreatedPayload,
-} from '@chatapp/common';
+import { USER_CREATED_ROUTING_KEY, USER_EVENTS_EXCHANGE, UserCreatedEvent, UserCreatedPayload } from '@chatapp/common';
 import { Channel, ChannelModel, connect, Connection } from 'amqplib';
 
 type ManageConnection = Connection & Pick<ChannelModel, 'createChannel' | 'close'>;
@@ -35,9 +30,10 @@ const ensureChannel = async (): Promise<Channel | null> => {
     channel = null;
   });
 
-  channel = await conn.createChannel();
-  channel.assertExchange(USER_EVENTS_EXCHANGE, 'topic', { durable: true });
-  return channel;
+  const amqpChannel = await conn.createChannel();
+  channel = amqpChannel;
+  amqpChannel.assertExchange(USER_EVENTS_EXCHANGE, 'topic', { durable: true });
+  return amqpChannel;
 };
 
 export const initMessaging = async (): Promise<void> => {
@@ -73,16 +69,11 @@ export const publishUserCreatedEvent = async (payload: UserCreatedPayload) => {
     type: USER_CREATED_ROUTING_KEY,
     payload,
     occurredAt: new Date().toISOString(),
-    metadata: { version: 1 },
+    metadata: { version: 1, service: env.SERVICE_NAME || 'user-service' },
   };
 
   try {
-    const published = chan.publish(
-      USER_EVENTS_EXCHANGE,
-      USER_CREATED_ROUTING_KEY,
-      Buffer.from(JSON.stringify(event)),
-      { persistent: true },
-    );
+    const published = chan.publish(USER_EVENTS_EXCHANGE, USER_CREATED_ROUTING_KEY, Buffer.from(JSON.stringify(event)), { persistent: true });
     if (!published) {
       logger.warn('UserCreatedEvent was not published successfully.');
     }

@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noUncheckedIndexedAccess": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "strictNullChecks": true
   },
   "exclude": ["node_modules", "dist"]
 }

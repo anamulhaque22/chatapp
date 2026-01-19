@@ -22,6 +22,7 @@ const closeConnection = async (conn: ManageConnection) => {
 const handleMessage = async (msg: ConsumeMessage, ch: Channel) => {
   const row = msg.content.toString('utf-8');
   const event = JSON.parse(row) as AuthRegisteredEvent;
+  console.log({ serviceName: event?.metadata?.service });
   await userService.syncFromAuthUser(event.payload);
   logger.info({ event }, 'User service synced user from auth service');
   ch.ack(msg);
@@ -55,7 +56,7 @@ export const startAuthEventConsumer = async () => {
     }
   };
 
-  const result: Replies.Consume = await channel.consume(queue.queue, consumeHandler);
+  const result: Replies.Consume = await ch.consume(queue.queue, consumeHandler);
   consumerTag = result.consumerTag;
 
   connection.on('close', () => {

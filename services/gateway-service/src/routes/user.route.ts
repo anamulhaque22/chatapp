@@ -1,22 +1,14 @@
-import { getUser } from '@/controllers/user.controller';
+import { createUser, getUser } from '@/controllers/user.controller';
 import { requireAuth } from '@/middleware/require-auth';
-import { searchUsersQuerySchema, userIdParamsSchema } from '@/validation/user.schema';
+import { createUserSchema, searchUsersQuerySchema, userIdParamsSchema } from '@/validation/user.schema';
 import { asyncHandler, validateRequest } from '@chatapp/common';
 import { Router } from 'express';
 
 const userRouter: Router = Router();
 
 userRouter.get('/', requireAuth, asyncHandler(getUser));
-userRouter.get(
-  '/search',
-  requireAuth,
-  validateRequest({ query: searchUsersQuerySchema }),
-  asyncHandler(getUser),
-);
-userRouter.get(
-  '/:id',
-  requireAuth,
-  validateRequest({ params: userIdParamsSchema }),
-  asyncHandler(getUser),
-);
+userRouter.get('/search', requireAuth, validateRequest({ query: searchUsersQuerySchema }), asyncHandler(getUser));
+userRouter.get('/:id', requireAuth, validateRequest({ params: userIdParamsSchema }), asyncHandler(getUser));
 userRouter.post('/', validateRequest({ body: createUserSchema }), asyncHandler(createUser));
+
+export { userRouter };
