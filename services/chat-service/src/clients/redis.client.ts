@@ -3,7 +3,7 @@ import { logger } from '@/utils/logger';
 import Redis from 'ioredis';
 
 let redis: Redis | null = null;
-const getRedisClient = (): Redis => {
+export const getRedisClient = (): Redis => {
   if (!redis) {
     redis = new Redis(env.REDIS_URL, {
       lazyConnect: true,
